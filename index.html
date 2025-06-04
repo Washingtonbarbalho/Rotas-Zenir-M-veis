@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Rotas - Zenir Móveis CDZ Sobral</title>
+    
+    <!-- Favicon e ícones para o navegador -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%233E4B96'/%3E%3Cpath d='M25 35h50v8H25z' fill='white'/%3E%3Cpath d='M30 50h40v3H30z' fill='white'/%3E%3Cpath d='M35 60h30v3H35z' fill='white'/%3E%3Ccircle cx='25' cy='75' r='8' fill='%23E53E3E'/%3E%3Ccircle cx='75' cy='75' r='8' fill='%23E53E3E'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%233E4B96'/%3E%3Cpath d='M40 60h100v15H40z' fill='white'/%3E%3Cpath d='M50 90h80v6H50z' fill='white'/%3E%3Cpath d='M60 110h60v6H60z' fill='white'/%3E%3Ccircle cx='45' cy='140' r='15' fill='%23E53E3E'/%3E%3Ccircle cx='135' cy='140' r='15' fill='%23E53E3E'/%3E%3Ctext x='90' y='45' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ECDZ%3C/text%3E%3C/svg%3E">
+    
+    <!-- Meta tags para compartilhamento social -->
+    <meta name="description" content="Sistema de Rotas da Zenir Móveis CDZ Sobral - Gerencie e consulte rotas de entrega por localidade, dia da semana, montagem e período de inverno.">
+    <meta property="og:title" content="Sistema de Rotas - Zenir Móveis CDZ Sobral">
+    <meta property="og:description" content="Sistema completo para gerenciamento de rotas de entrega da Zenir Móveis em Sobral">
+    <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233E4B96'/%3E%3Cstop offset='100%25' stop-color='%232A3583'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='630' fill='url(%23bg)'/%3E%3Ctext x='600' y='200' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='72' font-weight='bold'%3ESistema de Rotas%3C/text%3E%3Ctext x='600' y='280' text-anchor='middle' fill='%23E8F4FD' font-family='Arial, sans-serif' font-size='48'%3EZenir Móveis - CDZ Sobral%3C/text%3E%3Cpath d='M400 350h400v60H400z' fill='white' fill-opacity='0.1'/%3E%3Cpath d='M420 380h360v20H420z' fill='white' fill-opacity='0.3'/%3E%3Cpath d='M440 420h320v15H440z' fill='white' fill-opacity='0.3'/%3E%3Ccircle cx='450' cy='500' r='40' fill='%23E53E3E'/%3E%3Ccircle cx='750' cy='500' r='40' fill='%23E53E3E'/%3E%3Cpath d='M500 350L700 350' stroke='white' stroke-width='8' fill='none'/%3E%3C/svg%3E">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- PWA Meta tags -->
+    <meta name="theme-color" content="#3E4B96">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Rotas Zenir">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'zenir-blue': '#3E4B96',
+                        'zenir-red': '#E53E3E',
+                        'zenir-dark': '#2A3583',
+                        'zenir-light': '#F8FAFC',
+                        'zenir-gray': '#64748B',
+                        'zenir-bg': '#F1F5F9'
+                    },
+                    fontFamily: {
+                        'zenir': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-zenir-bg min-h-screen font-zenir">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-zenir-blue to-zenir-dark text-white shadow-xl">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-10 rounded-lg p-2">
+                        <i class="fas fa-route text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Sistema de Rotas</h1>
+                        <p class="text-blue-100 text-sm font-medium">Zenir Móveis - CDZ Sobral</p>
+                    </div>
+                </div>
+                <button id="addRouteBtn" class="bg-zenir-red hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg transform hover:scale-105">
+                    <i class="fas fa-plus mr-2"></i>
+                    Nova Rota
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Search Section -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-blue to-zenir-dark px-6 py-4">
+                <h2 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-search mr-3"></i>
+                    Buscar Localidade
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Digite o nome da localidade..." 
+                        class="flex-1 p-4 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20 transition-all duration-200 text-base bg-gray-50 focus:bg-white"
+                    >
+                    <button id="searchBtn" class="bg-zenir-blue hover:bg-zenir-dark text-white px-8 py-4 rounded-lg font-semibold transition-all duration-200 shadow-md transform hover:scale-105">
+                        <i class="fas fa-search mr-2"></i>
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Search Results -->
+    <div id="searchResultsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl m-4 max-w-5xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-blue to-zenir-dark px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-search mr-3"></i>
+                        Resultados da Busca
+                    </h3>
+                    <button id="closeSearchModal" class="text-white hover:text-gray-200 text-xl transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="searchResults" class="p-6 overflow-y-auto max-h-[calc(90vh-80px)] space-y-6"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit Route -->
+    <div id="routeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl m-4 max-w-md w-full overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-blue to-zenir-dark px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-xl font-bold text-white">Nova Rota</h3>
+                    <button id="closeModal" class="text-white hover:text-gray-200 text-xl transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <form id="routeForm" class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-zenir-gray mb-2">Localidade</label>
+                    <input type="text" id="localidade" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20 transition-all duration-200 text-base bg-gray-50 focus:bg-white" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-zenir-gray mb-2">Dia da Semana</label>
+                    <select id="diaSemana" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20 transition-all duration-200 text-base bg-gray-50 focus:bg-white" required>
+                        <option value="">Selecione...</option>
+                        <option value="Segunda-feira">Segunda-feira</option>
+                        <option value="Terça-feira">Terça-feira</option>
+                        <option value="Quarta-feira">Quarta-feira</option>
+                        <option value="Quinta-feira">Quinta-feira</option>
+                        <option value="Sexta-feira">Sexta-feira</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-zenir-gray mb-2">Montagem</label>
+                    <select id="montagem" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20 transition-all duration-200 text-base bg-gray-50 focus:bg-white" required>
+                        <option value="sim">Faz montagem</option>
+                        <option value="nao">Não faz montagem</option>
+                        <option value="sede">Montagem somente na sede</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-zenir-gray mb-2">Entrega no Inverno</label>
+                    <select id="inverno" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20 transition-all duration-200 text-base bg-gray-50 focus:bg-white" required>
+                        <option value="sim">Entrega no inverno</option>
+                        <option value="nao">Não entrega no inverno</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-zenir-blue hover:bg-zenir-dark text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 shadow-md transform hover:scale-105">
+                        <i class="fas fa-save mr-2"></i>
+                        Salvar
+                    </button>
+                    <button type="button" id="cancelBtn" class="flex-1 bg-zenir-gray hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl m-4 max-w-md w-full overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-red to-red-600 px-6 py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl mr-3"></i>
+                    <h3 class="text-xl font-bold text-white">Confirmar Exclusão</h3>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-zenir-gray mb-6 leading-relaxed">
+                    Tem certeza que deseja excluir a rota para <strong id="deleteLocalidade" class="text-zenir-dark"></strong>?
+                    <br><span class="text-sm text-zenir-red font-medium">Esta ação não pode ser desfeita.</span>
+                </p>
+                
+                <div class="flex gap-3">
+                    <button id="confirmDelete" class="flex-1 bg-zenir-red hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200 shadow-md transform hover:scale-105">
+                        <i class="fas fa-trash mr-2"></i>
+                        Sim, Excluir
+                    </button>
+                    <button id="cancelDelete" class="flex-1 bg-zenir-gray hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8">
+            <div class="flex items-center">
+                <i class="fas fa-spinner fa-spin mr-4 text-zenir-blue text-2xl"></i>
+                <span class="text-zenir-dark font-semibold text-lg">Carregando...</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5o467uLougYKkX8tsKJxgotwlwt8grDs",
+            authDomain: "rotas-zenir-moveis.firebaseapp.com",
+            projectId: "rotas-zenir-moveis",
+            storageBucket: "rotas-zenir-moveis.firebasestorage.app",
+            messagingSenderId: "555582126493",
+            appId: "1:555582126493:web:db96d488cb09b8d7d39774"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global variables
+        let allRoutes = [];
+        let editingRouteId = null;
+        let routeToDelete = null;
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchResultsModal = document.getElementById('searchResultsModal');
+        const closeSearchModal = document.getElementById('closeSearchModal');
+        const searchResults = document.getElementById('searchResults');
+        const addRouteBtn = document.getElementById('addRouteBtn');
+        const routeModal = document.getElementById('routeModal');
+        const closeModal = document.getElementById('closeModal');
+        const routeForm = document.getElementById('routeForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const loading = document.getElementById('loading');
+        
+        // Delete modal elements
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteLocalidade = document.getElementById('deleteLocalidade');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+
+        // Initial data to populate the database
+        const initialRoutes = [
+            // Segunda-feira
+            { localidade: "Telha 1", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Telha 2", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Canudos", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sabonete", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Setor 1,2 e 3", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Forquilha", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Salgados dos Mendes", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Varzea da cobra", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Caiçara", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Trapia", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Crauna", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Maita", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Faz. Agropezia", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Andressa", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Xique Xique", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tamandua", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Viração", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. lagoinha", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. jatoba", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. bala de Ouro", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Varjota dos Machados", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Salgado dos Machados", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Areau", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Lagoa do Peixe", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Malhada Grande", diaSemana: "Segunda-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Mulungo", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Itamaraca", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Groairas", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Corrego dos Matos", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Aroeias dos Marciel", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Lagoa das Bestas", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Varzea Alegre", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Marrecas", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Carnaubas", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bonfim", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Malhadinha", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Vazea Redonda", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Boa Esperança", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Almas Cariré", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aroeiras", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Setor 06", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Serrote do Piaba", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Posso Dantas", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Formoza", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Caeiras Estreito", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Corrego da Onça", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pedra Branca", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Faz. Malhada Grande", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Purpurema", diaSemana: "Segunda-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Massapê", diaSemana: "Segunda-feira", montagem: "sim", inverno: "sim" },
+
+            // Terça-feira
+            { localidade: "Campo novo", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Rasteira", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Lourenço", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bom Lugar", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Fazenda Oficina", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Cajazeiras", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Olho D'água dos Cassimiros", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Inga", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pocinhos", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lisiuex", diaSemana: "Terça-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Emasa", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Acentamento São José", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa do Mato", diaSemana: "Terça-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Acentamento Paje", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santa Quiteria", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bilheira", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Macapá", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Vassouras", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Taperuaba", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bom Jesus", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Jurema", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Puba 1, 2 e 3", diaSemana: "Terça-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Juazeiro", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ubá", diaSemana: "Terça-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Boa Vista", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Barreiras", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mocó", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Primavera", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Luz", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Gaviões", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Cacimbinha", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Cachoeiro dos Lourentos", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lajes", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Caracara", diaSemana: "Terça-feira", montagem: "sede", inverno: "sim" },
+            { localidade: "Sabonete", diaSemana: "Terça-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Carnauba", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Poço Verde", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Casinhas", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Picada", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Oiticica", diaSemana: "Terça-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Melado", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Fumo", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Coite", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Patos", diaSemana: "Terça-feira", montagem: "sede", inverno: "sim" },
+            { localidade: "Agua Doce", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Timbauba 1 e 2", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Oiticica", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Joaquim", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Riacho do Gabriel", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aracatiaçu", diaSemana: "Terça-feira", montagem: "sede", inverno: "sim" },
+            { localidade: "João Pereira 1 e 2", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São João", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Barro Branco", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Estivas", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Chumbado", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Acentamento Boa Espernça", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Irauçuba", diaSemana: "Terça-feira", montagem: "sede", inverno: "sim" },
+            { localidade: "Faz. os Bois", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Saco do Paje", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Varzea da Cruz", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Parana", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa da Cruz", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mata Fechada", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Rachada", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Riacho do Feijão", diaSemana: "Terça-feira", montagem: "sim", inverno: "sim" },
+
+            // Quarta-feira
+            { localidade: "Alto Grande", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mumbaba 1,2 e 3", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tuina", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Arraial", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mirim", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Salgadinho", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Contendas", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Fazenda Raiz", diaSemana: "Quarta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Morgado", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Santa Luzia", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sao Francisco", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Pe. Linhares", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aiua", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Madeira", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tapera Alta", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tapera Baixa", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa Grande", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Gregrorio", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ariau", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Jatoba", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Pau Branco", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Baixio", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa dos Bois", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tangente", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Senador Sá", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Uruoca", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Barreira", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Martinopolis", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Granja", diaSemana: "Quarta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Parazinho", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Camocim", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Riachão dos Farias", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Campestre", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Jordão", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Casa Forte", diaSemana: "Quarta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Contedas", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Distevo", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santana", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santo Antonio", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Guariba", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Bananeira", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Jose 1 e 2", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Croata", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Baracho", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santo Hilario", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Luiz", diaSemana: "Quarta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Sitio Penha", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Agua Branca", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Boqueirão", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Coqueiro", diaSemana: "Quarta-feira", montagem: "sim", inverno: "sim" },
+
+            // Quinta-feira
+            { localidade: "Vazea da Pedra", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Caioca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ipueirinhas", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Faz. Alegre", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Patriarca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Bento", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bahia", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mutuca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santana do Acarau", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sapó", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mutambeiras", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Morrinhos", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Marco", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Bela Cruz", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Cruz", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Acaraú", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Vila Progresso", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa do Canema", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Imbé", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pistola", diaSemana: "Quinta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Sororoca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bom Jardim", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Argentina", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Caieras", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Mulugu", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aranaú", diaSemana: "Quinta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Goiabeira", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mata Fresca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santa Ursula", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santa Elias", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Flores", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Floresta", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Palestina", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Saco dos Passarinhos", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Boa Vista", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Capim Frio", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Pinto", diaSemana: "Quinta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Palmeiras", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Meruoca", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Gameleira", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Anil", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santa Rosa", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio São Rafael", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Barro", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Mato Grosso", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Buqueirão", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Braz", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São João das Almas 1 e 2", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "AImas", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Camilos", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santo Antonio dos Fernandes", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Fidalgo", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio do Meio", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Carmolandia", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Livramento", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lanchinha", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santa Barbara", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Alegre", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Algodão", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Alcantaras", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Macaco", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Milagre", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Belem", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Silva", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ventura", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Venturinha", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Prata", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Penhã", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Espirito Santo", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Bernado 1 e 2", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Desterro", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Santa Maria", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Calderão", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio São Roberto", diaSemana: "Quinta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Flores", diaSemana: "Quinta-feira", montagem: "sim", inverno: "nao" },
+
+            // Sexta-feira
+            { localidade: "Ipueirinha", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Domingos", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aprazivel", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pau Darquinho", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pau Darco", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pedra de Fogo", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ponta Da Serra", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Aroeiras Coreaú", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Moraújo", diaSemana: "Sexta-feira", montagem: "sede", inverno: "sim" },
+            { localidade: "Mucambo dos Cristinos", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Campanario", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tapera", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Vazea da Volta", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Cauã", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Úbauna", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Jose do Torto", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Torto de Cima", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Mamão", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Beira do Rio", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Angicos", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Rafael Arruda", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Cachoeira", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ouro Branco", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Recreio", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Cacimbas", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Carqueijo", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Sitio Caminhos", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Mucambo", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Vila Libania", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pacuja", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Graça", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Lagoa do Meio", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Largeiro", diaSemana: "Sexta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Riacho Fundo", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pedro Junior", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pv. Varjota", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pv. Poço Verde", diaSemana: "Sexta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Canto", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Bregedó", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Milhans", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Setor 1, 2, e 3", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz.Todos Nós", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Jaibaras", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Maracaja", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Serrote Branco", diaSemana: "Sexta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Mulugu", diaSemana: "Sexta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Faz. Meio Dia", diaSemana: "Sexta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Fazenda Delicia", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "São Pedro", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ararius", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Alto Feliz", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Carire", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Alto dos Onorios", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Tapuiu", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Juca", diaSemana: "Sexta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Caiçara", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Jure", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Macaraú", diaSemana: "Sexta-feira", montagem: "nao", inverno: "sim" },
+            { localidade: "Amanaiara", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Reriutaba", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Varjota", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Ararinha", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Jardim", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Faz. Alto Alegre", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Santo Antônio do Jure", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Pv. Santana", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" },
+            { localidade: "Riacho Seco", diaSemana: "Sexta-feira", montagem: "sim", inverno: "nao" },
+            { localidade: "Lagoa de Fora", diaSemana: "Sexta-feira", montagem: "sim", inverno: "sim" }
+        ];
+
+        // Functions
+        function showLoading(show = true) {
+            loading.classList.toggle('hidden', !show);
+            loading.classList.toggle('flex', show);
+        }
+
+        function showModal(show = true) {
+            routeModal.classList.toggle('hidden', !show);
+            routeModal.classList.toggle('flex', show);
+        }
+
+        function clearForm() {
+            routeForm.reset();
+            editingRouteId = null;
+        }
+
+        function formatRouteInfo(route) {
+            const montagemText = {
+                'sim': 'Faz montagem',
+                'nao': 'Não faz montagem',
+                'sede': 'Montagem somente na sede'
+            };
+            
+            const invernoText = {
+                'sim': 'Entrega no inverno',
+                'nao': 'Não entrega no inverno'
+            };
+
+            return `
+                <div class="bg-white rounded-xl p-6 border-l-4 border-zenir-blue shadow-lg hover:shadow-xl transition-shadow duration-200">
+                    <h4 class="font-bold text-xl text-zenir-dark mb-4">${route.localidade}</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="bg-zenir-blue bg-opacity-10 rounded-lg p-2 mr-3">
+                                <i class="fas fa-calendar-day text-zenir-blue"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-zenir-gray">Dia da Semana</span>
+                                <p class="font-semibold text-zenir-dark">${route.diaSemana}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-zenir-blue bg-opacity-10 rounded-lg p-2 mr-3">
+                                <i class="fas fa-tools text-zenir-blue"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-zenir-gray">Montagem</span>
+                                <p class="font-semibold text-zenir-dark">${montagemText[route.montagem]}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-zenir-blue bg-opacity-10 rounded-lg p-2 mr-3">
+                                <i class="fas fa-snowflake text-zenir-blue"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-zenir-gray">Entrega no Inverno</span>
+                                <p class="font-semibold text-zenir-dark">${invernoText[route.inverno]}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-6 pt-4 border-t border-gray-100">
+                        <button onclick="editRoute('${route.id}')" class="flex-1 bg-zenir-blue hover:bg-zenir-dark text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-md">
+                            <i class="fas fa-edit mr-2"></i>Editar
+                        </button>
+                        <button onclick="deleteRoute('${route.id}')" class="flex-1 bg-zenir-red hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-md">
+                            <i class="fas fa-trash mr-2"></i>Excluir
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadRoutes() {
+            try {
+                showLoading(true);
+                const querySnapshot = await getDocs(collection(db, "rotas"));
+                allRoutes = [];
+                
+                querySnapshot.forEach((doc) => {
+                    allRoutes.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (allRoutes.length === 0) {
+                    await populateInitialData();
+                }
+            } catch (error) {
+                console.error("Erro ao carregar rotas:", error);
+                alert("Erro ao carregar as rotas. Tente novamente.");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function populateInitialData() {
+            try {
+                console.log("Populando dados iniciais...");
+                const batch = [];
+                
+                for (const route of initialRoutes) {
+                    batch.push(addDoc(collection(db, "rotas"), route));
+                }
+                
+                await Promise.all(batch);
+                console.log("Dados iniciais adicionados com sucesso!");
+                await loadRoutes();
+            } catch (error) {
+                console.error("Erro ao popular dados iniciais:", error);
+                alert("Erro ao inicializar o sistema. Tente recarregar a página.");
+            }
+        }
+
+        function displayAllRoutes() {
+            const routesByDay = {
+                'Segunda-feira': [],
+                'Terça-feira': [],
+                'Quarta-feira': [],
+                'Quinta-feira': [],
+                'Sexta-feira': []
+            };
+
+            allRoutes.forEach(route => {
+                if (routesByDay[route.diaSemana]) {
+                    routesByDay[route.diaSemana].push(route);
+                }
+            });
+
+            let html = '';
+            Object.keys(routesByDay).forEach(day => {
+                html += `
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-primary mb-3 border-b border-gray-200 pb-2">
+                            <i class="fas fa-calendar mr-2"></i>${day}
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${routesByDay[day].map(route => formatRouteInfo(route)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            allRoutesDiv.innerHTML = html;
+        }
+
+        // Função para normalizar texto - remove apenas acentos e cedilhas
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize('NFD') // Decompõe caracteres acentuados
+                .replace(/[\u0300-\u036f]/g, '') // Remove os diacríticos (acentos)
+                .replace(/[çÇ]/g, 'c'); // Substitui ç por c
+        }
+
+        function searchRoutes() {
+            const searchTerm = searchInput.value.trim();
+            
+            if (!searchTerm) {
+                alert('Por favor, digite o nome de uma localidade para pesquisar.');
+                return;
+            }
+
+            // Normaliza o termo de busca e a localidade para comparação
+            const normalizedSearchTerm = normalizeText(searchTerm);
+
+            const filteredRoutes = allRoutes.filter(route => {
+                const normalizedLocalidade = normalizeText(route.localidade);
+                return normalizedLocalidade.includes(normalizedSearchTerm);
+            });
+
+            if (filteredRoutes.length > 0) {
+                const html = filteredRoutes.map(route => formatRouteInfo(route)).join('');
+                searchResults.innerHTML = html;
+            } else {
+                searchResults.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-600 text-lg">Nenhuma localidade encontrada para "${searchTerm}"</p>
+                        <p class="text-gray-500 text-sm mt-2">Tente usar termos diferentes ou verifique a ortografia.</p>
+                    </div>
+                `;
+            }
+            
+            // Mostrar modal com resultados
+            searchResultsModal.classList.remove('hidden');
+            searchResultsModal.classList.add('flex');
+        }
+
+        async function saveRoute(routeData) {
+            try {
+                showLoading(true);
+                
+                if (editingRouteId) {
+                    await updateDoc(doc(db, "rotas", editingRouteId), routeData);
+                    console.log("Rota atualizada com sucesso!");
+                } else {
+                    await addDoc(collection(db, "rotas"), routeData);
+                    console.log("Rota adicionada com sucesso!");
+                }
+                
+                await loadRoutes();
+                showModal(false);
+                clearForm();
+            } catch (error) {
+                console.error("Erro ao salvar rota:", error);
+                alert("Erro ao salvar a rota. Tente novamente.");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        window.editRoute = function(routeId) {
+            const route = allRoutes.find(r => r.id === routeId);
+            if (route) {
+                editingRouteId = routeId;
+                document.getElementById('localidade').value = route.localidade;
+                document.getElementById('diaSemana').value = route.diaSemana;
+                document.getElementById('montagem').value = route.montagem;
+                document.getElementById('inverno').value = route.inverno;
+                modalTitle.textContent = 'Editar Rota';
+                showModal(true);
+            }
+        };
+
+        // Função para mostrar modal de confirmação de exclusão
+        function showDeleteModal(show = true) {
+            deleteModal.classList.toggle('hidden', !show);
+            deleteModal.classList.toggle('flex', show);
+        }
+
+        // Função chamada quando o botão de excluir é clicado
+        window.deleteRoute = function(routeId) {
+            const route = allRoutes.find(r => r.id === routeId);
+            if (route) {
+                routeToDelete = routeId;
+                deleteLocalidade.textContent = route.localidade;
+                showDeleteModal(true);
+            }
+        };
+
+        // Função para confirmar a exclusão
+        async function confirmDeleteRoute() {
+            if (routeToDelete) {
+                try {
+                    showLoading(true);
+                    showDeleteModal(false);
+                    
+                    await deleteDoc(doc(db, "rotas", routeToDelete));
+                    console.log("Rota excluída com sucesso!");
+                    
+                    // Recarrega as rotas e atualiza a busca se houver resultados sendo exibidos
+                    await loadRoutes();
+                    
+                    // Se o modal de busca estiver aberto, atualiza os resultados
+                    if (!searchResultsModal.classList.contains('hidden')) {
+                        searchRoutes();
+                    }
+                    
+                    routeToDelete = null;
+                } catch (error) {
+                    console.error("Erro ao excluir rota:", error);
+                    alert("Erro ao excluir a rota. Tente novamente.");
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        // Função para ajustar a tela quando o teclado aparecer (apenas para campo de busca)
+        function adjustSearchFieldForKeyboard() {
+            // Scroll suave para posicionar o campo de busca no topo
+            const searchSection = document.querySelector('.container .bg-white');
+            if (searchSection) {
+                searchSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                });
+            }
+        }
+
+        // Event listeners
+        searchBtn.addEventListener('click', searchRoutes);
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchRoutes();
+            }
+        });
+
+        // Ajuste automático apenas quando o campo de busca ganha foco
+        searchInput.addEventListener('focus', () => {
+            // Delay pequeno para dispositivos móveis
+            setTimeout(adjustSearchFieldForKeyboard, 300);
+        });
+
+        // Close search results modal
+        closeSearchModal.addEventListener('click', () => {
+            searchResultsModal.classList.add('hidden');
+            searchResultsModal.classList.remove('flex');
+        });
+
+        // Close search modal when clicking outside
+        searchResultsModal.addEventListener('click', (e) => {
+            if (e.target === searchResultsModal) {
+                searchResultsModal.classList.add('hidden');
+                searchResultsModal.classList.remove('flex');
+            }
+        });
+
+        addRouteBtn.addEventListener('click', () => {
+            clearForm();
+            modalTitle.textContent = 'Nova Rota';
+            showModal(true);
+        });
+
+        closeModal.addEventListener('click', () => {
+            showModal(false);
+            clearForm();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            showModal(false);
+            clearForm();
+        });
+
+        routeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const routeData = {
+                localidade: document.getElementById('localidade').value.trim(),
+                diaSemana: document.getElementById('diaSemana').value,
+                montagem: document.getElementById('montagem').value,
+                inverno: document.getElementById('inverno').value
+            };
+
+            saveRoute(routeData);
+        });
+
+        // Close modal when clicking outside
+        routeModal.addEventListener('click', (e) => {
+            if (e.target === routeModal) {
+                showModal(false);
+                clearForm();
+            }
+        });
+
+        // Event listeners para o modal de exclusão
+        confirmDelete.addEventListener('click', confirmDeleteRoute);
+        
+        cancelDelete.addEventListener('click', () => {
+            showDeleteModal(false);
+            routeToDelete = null;
+        });
+
+        // Close delete modal when clicking outside
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                showDeleteModal(false);
+                routeToDelete = null;
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRoutes();
+        });
+
+        // Handle dark mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+</body>
+  </html>
