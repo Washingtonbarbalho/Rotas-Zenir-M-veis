@@ -144,6 +144,7 @@
                         <option value="Quarta-feira">Quarta-feira</option>
                         <option value="Quinta-feira">Quinta-feira</option>
                         <option value="Sexta-feira">Sexta-feira</option>
+                        <option value="Sábado">Sábado</option>
                     </select>
                 </div>
                 
@@ -219,7 +220,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs as getFirestoreDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -694,28 +695,6 @@
             { localidade: "Sobral", diaSemana: "Sábado", montagem: "sim", inverno: "sim" }
         ];
 
-        // Usa as rotas oficiais do PDF como fonte de consulta enquanto o Firebase permanece somente leitura.
-        function getOfficialRoutesSnapshot() {
-            return {
-                forEach(callback) {
-                    initialRoutes.forEach((route, index) => {
-                        callback({
-                            id: `pdf-${index}`,
-                            data: () => ({ ...route })
-                        });
-                    });
-                }
-            };
-        }
-
-        async function getDocs(reference) {
-            if (reference?.path === "rotas") {
-                return getOfficialRoutesSnapshot();
-            }
-
-            return getFirestoreDocs(reference);
-        }
-
         // Functions
         function showLoading(show = true) {
             loading.classList.toggle('hidden', !show);
@@ -794,8 +773,17 @@
                 const querySnapshot = await getDocs(collection(db, "rotas"));
                 allRoutes = [];
                 
-                querySnapshot.forEach((doc) => {
-                    allRoutes.push({ id: doc.id, ...doc.data() });
+                querySnapshot.forEach((routeDoc) => {
+                    const routeData = routeDoc.data();
+                    if (routeData._deleted === true) {
+                        return;
+                    }
+
+                    allRoutes.push({
+                        id: routeDoc.id,
+                        ...routeData,
+                        diaSemana: routeData._displayDiaSemana || routeData.diaSemana
+                    });
                 });
 
                 if (allRoutes.length === 0) {
@@ -815,7 +803,7 @@
                 const batch = [];
                 
                 for (const route of initialRoutes) {
-                    batch.push(addDoc(collection(db, "rotas"), route));
+                    batch.push(addRouteDocument(route));
                 }
                 
                 await Promise.all(batch);
@@ -833,7 +821,8 @@
                 'Terça-feira': [],
                 'Quarta-feira': [],
                 'Quinta-feira': [],
-                'Sexta-feira': []
+                'Sexta-feira': [],
+                'Sábado': []
             };
 
             allRoutes.forEach(route => {
@@ -902,19 +891,51 @@
             searchResultsModal.classList.add('flex');
         }
 
+        function getStoredRouteData(routeData) {
+            return {
+                localidade: routeData.localidade,
+                diaSemana: routeData.diaSemana === 'Sábado' ? 'Sexta-feira' : routeData.diaSemana,
+                montagem: routeData.montagem,
+                inverno: routeData.inverno
+            };
+        }
+
+        async function addRouteDocument(routeData) {
+            const newRouteRef = await addDoc(collection(db, "rotas"), getStoredRouteData(routeData));
+
+            if (routeData.diaSemana === 'Sábado') {
+                try {
+                    await updateDoc(newRouteRef, { _displayDiaSemana: 'Sábado' });
+                } catch (error) {
+                    await updateDoc(newRouteRef, { _deleted: true });
+                    throw error;
+                }
+            }
+
+            return newRouteRef;
+        }
+
         async function saveRoute(routeData) {
             try {
                 showLoading(true);
                 
                 if (editingRouteId) {
-                    await updateDoc(doc(db, "rotas", editingRouteId), routeData);
+                    await updateDoc(doc(db, "rotas", editingRouteId), {
+                        ...getStoredRouteData(routeData),
+                        _displayDiaSemana: routeData.diaSemana === 'Sábado' ? 'Sábado' : null
+                    });
                     console.log("Rota atualizada com sucesso!");
                 } else {
-                    await addDoc(collection(db, "rotas"), routeData);
+                    await addRouteDocument(routeData);
                     console.log("Rota adicionada com sucesso!");
                 }
                 
                 await loadRoutes();
+
+                if (!searchResultsModal.classList.contains('hidden')) {
+                    searchRoutes();
+                }
+
                 showModal(false);
                 clearForm();
             } catch (error) {
@@ -961,7 +982,7 @@
                     showLoading(true);
                     showDeleteModal(false);
                     
-                    await deleteDoc(doc(db, "rotas", routeToDelete));
+                    await updateDoc(doc(db, "rotas", routeToDelete), { _deleted: true });
                     console.log("Rota excluída com sucesso!");
                     
                     // Recarrega as rotas e atualiza a busca se houver resultados sendo exibidos
