@@ -219,7 +219,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs as getFirestoreDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -693,6 +693,28 @@
             // Sábado - entrega em Sobral
             { localidade: "Sobral", diaSemana: "Sábado", montagem: "sim", inverno: "sim" }
         ];
+
+        // Usa as rotas oficiais do PDF como fonte de consulta enquanto o Firebase permanece somente leitura.
+        function getOfficialRoutesSnapshot() {
+            return {
+                forEach(callback) {
+                    initialRoutes.forEach((route, index) => {
+                        callback({
+                            id: `pdf-${index}`,
+                            data: () => ({ ...route })
+                        });
+                    });
+                }
+            };
+        }
+
+        async function getDocs(reference) {
+            if (reference?.path === "rotas") {
+                return getOfficialRoutesSnapshot();
+            }
+
+            return getFirestoreDocs(reference);
+        }
 
         // Functions
         function showLoading(show = true) {
