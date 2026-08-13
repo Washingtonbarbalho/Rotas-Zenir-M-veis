@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Rotas - Zenir Móveis CDZ Sobral</title>
     
-    <!-- Favicon e ícones para o navegador -->
-    <link rel="icon" type="image/png" href="./images/favicon.png">
-    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
+    <!-- Símbolo vetorial do aplicativo -->
+    <link rel="icon" type="image/svg+xml" href="./app-icon.svg">
+    <link rel="apple-touch-icon" href="./app-icon.svg">
     
     <!-- Meta tags para compartilhamento social -->
     <meta name="description" content="Sistema de Rotas da Zenir Móveis CDZ Sobral - Gerencie e consulte rotas de entrega por localidade, dia da semana, montagem e período de inverno.">
     <meta property="og:title" content="Sistema de Rotas - Zenir Móveis CDZ Sobral">
     <meta property="og:description" content="Sistema completo para gerenciamento de rotas de entrega da Zenir Móveis em Sobral">
-    <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233E4B96'/%3E%3Cstop offset='100%25' stop-color='%232A3583'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='630' fill='url(%23bg)'/%3E%3Ctext x='600' y='200' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='72' font-weight='bold'%3ESistema de Rotas%3C/text%3E%3Ctext x='600' y='280' text-anchor='middle' fill='%23E8F4FD' font-family='Arial, sans-serif' font-size='48'%3EZenir Móveis - CDZ Sobral%3C/text%3E%3Cpath d='M400 350h400v60H400z' fill='white' fill-opacity='0.1'/%3E%3Cpath d='M420 380h360v20H420z' fill='white' fill-opacity='0.3'/%3E%3Cpath d='M440 420h320v15H440z' fill='white' fill-opacity='0.3'/%3E%3Ccircle cx='450' cy='500' r='40' fill='%23E53E3E'/%3E%3Ccircle cx='750' cy='500' r='40' fill='%23E53E3E'/%3E%3Cpath d='M500 350L700 350' stroke='white' stroke-width='8' fill='none'/%3E%3C/svg%3E">
+    <meta property="og:image" content="https://washingtonbarbalho.github.io/Rotas-Zenir-M-veis/app-icon.svg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     
@@ -55,8 +55,20 @@
     <section id="authScreen" class="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue via-zenir-dark to-slate-900">
         <div class="w-full max-w-md">
             <div class="text-center text-white mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white bg-opacity-10 mb-4 shadow-lg">
-                    <i class="fas fa-route text-3xl"></i>
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 shadow-lg rounded-2xl overflow-hidden">
+                    <svg viewBox="0 0 64 64" class="w-16 h-16" aria-hidden="true" focusable="false">
+                        <defs>
+                            <linearGradient id="loginIconBackground" x1="8" y1="6" x2="57" y2="59" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#5363B7"/>
+                                <stop offset="1" stop-color="#2A3583"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="64" height="64" rx="16" fill="url(#loginIconBackground)"/>
+                        <path d="M13 46c3-12 17-4 20-15" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9"/>
+                        <circle cx="13" cy="46" r="4" fill="white"/>
+                        <path d="M46 11c-7.18 0-13 5.82-13 13 0 9.65 13 23 13 23s13-13.35 13-23c0-7.18-5.82-13-13-13Z" fill="#E53E3E"/>
+                        <circle cx="46" cy="24" r="4.5" fill="white"/>
+                    </svg>
                 </div>
                 <h1 class="text-3xl font-bold">Sistema de Rotas</h1>
                 <p class="text-blue-100 mt-2">Zenir Móveis — CDZ Sobral</p>
@@ -93,27 +105,9 @@
                     </button>
                 </form>
 
-                <div class="flex flex-col items-center gap-3 mt-5 text-sm">
+                <div class="text-center mt-5 text-sm">
                     <button id="forgotPasswordBtn" type="button" class="text-zenir-blue hover:text-zenir-dark font-semibold">Esqueci minha senha</button>
-                    <button id="showAdminSetupBtn" type="button" class="text-zenir-gray hover:text-zenir-dark">Primeiro acesso do administrador</button>
                 </div>
-
-                <form id="adminSetupForm" class="hidden mt-6 pt-6 border-t border-gray-200 space-y-4" autocomplete="off">
-                    <div class="bg-blue-50 border border-blue-100 text-sm text-zenir-dark rounded-lg p-4">
-                        <p class="font-semibold">Ativação do administrador</p>
-                        <p class="mt-1">Conta: <span class="font-medium">washington.wn8@gmail.com</span></p>
-                        <p class="mt-1 text-xs text-zenir-gray">Após criar a senha, confirme o e-mail recebido antes de entrar.</p>
-                    </div>
-                    <div>
-                        <label for="adminSetupPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Crie sua senha</label>
-                        <input type="password" id="adminSetupPassword" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
-                    </div>
-                    <div>
-                        <label for="adminSetupPasswordConfirm" class="block text-sm font-semibold text-zenir-gray mb-2">Confirme sua senha</label>
-                        <input type="password" id="adminSetupPasswordConfirm" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
-                    </div>
-                    <button type="submit" class="w-full bg-zenir-dark hover:bg-zenir-blue text-white py-3 px-6 rounded-lg font-semibold">Ativar conta administradora</button>
-                </form>
             </div>
         </div>
     </section>
@@ -164,32 +158,46 @@
 
     <div id="appShell" class="hidden">
     <!-- Header -->
-    <header class="bg-gradient-to-r from-zenir-blue to-zenir-dark text-white shadow-xl">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-white bg-opacity-10 rounded-lg p-2">
-                        <i class="fas fa-route text-2xl"></i>
+    <header class="bg-gradient-to-r from-zenir-blue to-zenir-dark text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-11 h-11 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+                        <svg viewBox="0 0 64 64" class="w-full h-full" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="headerIconBackground" x1="8" y1="6" x2="57" y2="59" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#5363B7"/>
+                                    <stop offset="1" stop-color="#2A3583"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="64" height="64" rx="16" fill="url(#headerIconBackground)"/>
+                            <path d="M13 46c3-12 17-4 20-15" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9"/>
+                            <circle cx="13" cy="46" r="4" fill="white"/>
+                            <path d="M46 11c-7.18 0-13 5.82-13 13 0 9.65 13 23 13 23s13-13.35 13-23c0-7.18-5.82-13-13-13Z" fill="#E53E3E"/>
+                            <circle cx="46" cy="24" r="4.5" fill="white"/>
+                        </svg>
                     </div>
-                    <div>
-                        <h1 class="text-2xl font-bold">Sistema de Rotas</h1>
-                        <p class="text-blue-100 text-sm font-medium">Zenir Móveis - CDZ Sobral</p>
+                    <div class="min-w-0">
+                        <h1 class="text-xl sm:text-2xl font-bold leading-tight truncate">Sistema de Rotas</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm font-medium truncate">Zenir Móveis - CDZ Sobral</p>
                     </div>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                    <div class="text-sm sm:text-right mr-1">
-                        <p id="currentUserName" class="font-semibold"></p>
-                        <p id="currentUserDetails" class="text-blue-100 text-xs"></p>
+                <div class="flex items-center justify-between sm:justify-end gap-3 min-w-0">
+                    <div class="text-left sm:text-right min-w-0 flex-1 sm:flex-none">
+                        <p id="currentUserName" class="font-medium text-sm truncate"></p>
+                        <p id="currentUserDetails" class="text-blue-100 text-xs truncate"></p>
                     </div>
-                    <button id="manageUsersBtn" class="hidden bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-3 rounded-lg font-semibold transition-all">
-                        <i class="fas fa-users-cog mr-2"></i>Usuários
-                    </button>
-                    <button id="addRouteBtn" class="bg-zenir-red hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg">
-                        <i class="fas fa-plus mr-2"></i>Nova Rota
-                    </button>
-                    <button id="logoutBtn" class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-3 rounded-lg font-semibold transition-all">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
-                    </button>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button id="manageUsersBtn" type="button" aria-label="Gerenciar usuários" title="Gerenciar usuários" class="hidden items-center justify-center gap-2 w-9 h-9 md:w-auto md:px-3 rounded-lg border border-white border-opacity-10 bg-white bg-opacity-5 hover:bg-opacity-15 text-white text-xs font-medium transition-colors">
+                            <i class="fas fa-users-cog" aria-hidden="true"></i><span class="hidden md:inline">Usuários</span>
+                        </button>
+                        <button id="addRouteBtn" type="button" aria-label="Cadastrar nova rota" title="Cadastrar nova rota" class="inline-flex items-center justify-center gap-2 w-9 h-9 md:w-auto md:px-3 rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 hover:bg-opacity-20 text-white text-xs font-medium transition-colors">
+                            <i class="fas fa-plus" aria-hidden="true"></i><span class="hidden md:inline">Nova rota</span>
+                        </button>
+                        <button id="logoutBtn" type="button" aria-label="Sair do sistema" title="Sair do sistema" class="inline-flex items-center justify-center gap-2 w-9 h-9 md:w-auto md:px-3 rounded-lg border border-white border-opacity-10 bg-transparent hover:bg-white hover:bg-opacity-10 text-blue-100 hover:text-white text-xs font-medium transition-colors">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i><span class="hidden md:inline">Sair</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -498,8 +506,6 @@
         const loginPassword = document.getElementById('loginPassword');
         const authMessage = document.getElementById('authMessage');
         const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
-        const showAdminSetupBtn = document.getElementById('showAdminSetupBtn');
-        const adminSetupForm = document.getElementById('adminSetupForm');
         const verificationEmail = document.getElementById('verificationEmail');
         const verificationMessage = document.getElementById('verificationMessage');
         const checkVerificationBtn = document.getElementById('checkVerificationBtn');
@@ -1018,8 +1024,6 @@
             loginForm.reset();
             loginEmail.value = '';
             loginPassword.value = '';
-            adminSetupForm.reset();
-            adminSetupForm.classList.add('hidden');
         }
 
         function isAdministrator(user = auth.currentUser) {
@@ -1094,7 +1098,9 @@
             const administrator = isAdministrator();
             const routeManagement = canManageRoutes();
             manageUsersBtn.classList.toggle('hidden', !administrator);
+            manageUsersBtn.classList.toggle('inline-flex', administrator);
             addRouteBtn.classList.toggle('hidden', !routeManagement);
+            addRouteBtn.classList.toggle('inline-flex', routeManagement);
             currentUserName.textContent = currentUserProfile?.nome || auth.currentUser?.email || '';
 
             const accessLabel = administrator
@@ -1208,44 +1214,6 @@
             } catch (error) {
                 console.error('Erro ao solicitar redefinição:', error);
                 showFeedback(authMessage, translateAuthError(error));
-            } finally {
-                showLoading(false);
-            }
-        });
-
-        showAdminSetupBtn.addEventListener('click', () => {
-            adminSetupForm.classList.toggle('hidden');
-            showFeedback(authMessage);
-        });
-
-        adminSetupForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const password = document.getElementById('adminSetupPassword').value;
-            const confirmation = document.getElementById('adminSetupPasswordConfirm').value;
-
-            if (password !== confirmation) {
-                showFeedback(authMessage, 'As senhas não coincidem.');
-                return;
-            }
-            if (!validateStrongPassword(password)) {
-                showFeedback(authMessage, 'Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.');
-                return;
-            }
-
-            showLoading(true);
-            try {
-                const credential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
-                await updateProfile(credential.user, { displayName: 'Washington Barbalho' });
-                await sendEmailVerification(credential.user);
-                verificationEmail.textContent = ADMIN_EMAIL;
-                showFeedback(verificationMessage, 'E-mail de confirmação enviado.', 'success');
-                showOnlyScreen(verificationScreen);
-            } catch (error) {
-                console.error('Erro ao ativar administrador:', error);
-                const message = error.code === 'auth/email-already-in-use'
-                    ? 'A conta administradora já existe. Use o login ou “Esqueci minha senha”.'
-                    : translateAuthError(error);
-                showFeedback(authMessage, message);
             } finally {
                 showLoading(false);
             }

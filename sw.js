@@ -1,8 +1,9 @@
-const CACHE_NAME = 'rotas-zenir-v3.0.0';
+const CACHE_NAME = 'rotas-zenir-v3.1.0';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
+  './app-icon.svg',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
