@@ -48,11 +48,102 @@
             }
         }
     </script>
+    <style>
+        /* Critical startup styles: keep protected screens hidden until Firebase restores the session. */
+        [hidden] {
+            display: none !important;
+        }
+
+        #sessionLoadingScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            color: #ffffff;
+            background: linear-gradient(135deg, #3E4B96 0%, #2A3583 58%, #172033 100%);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        #sessionLoadingScreen[hidden] {
+            display: none !important;
+        }
+
+        .session-loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .session-loading-logo {
+            width: 4rem;
+            height: 4rem;
+            margin-bottom: 1.25rem;
+            filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.25));
+        }
+
+        .session-loading-spinner {
+            width: 1.75rem;
+            height: 1.75rem;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            border-top-color: #ffffff;
+            border-radius: 9999px;
+            animation: session-loading-spin 0.8s linear infinite;
+        }
+
+        .session-loading-title {
+            margin: 1rem 0 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .session-loading-description {
+            margin: 0;
+            color: #DBEAFE;
+            font-size: 0.8rem;
+        }
+
+        @keyframes session-loading-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .session-loading-spinner {
+                animation-duration: 1.6s;
+            }
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-zenir-bg min-h-screen font-zenir">
+    <!-- Visible immediately while Firebase restores the persisted session. -->
+    <section id="sessionLoadingScreen" role="status" aria-live="polite" aria-label="Verificando sessão">
+        <div class="session-loading-content">
+            <svg viewBox="0 0 64 64" class="session-loading-logo" aria-hidden="true" focusable="false">
+                <defs>
+                    <linearGradient id="sessionIconBackground" x1="8" y1="6" x2="57" y2="59" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#5363B7"/>
+                        <stop offset="1" stop-color="#2A3583"/>
+                    </linearGradient>
+                </defs>
+                <rect width="64" height="64" rx="16" fill="url(#sessionIconBackground)"/>
+                <path d="M13 46c3-12 17-4 20-15" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9"/>
+                <circle cx="13" cy="46" r="4" fill="white"/>
+                <path d="M46 11c-7.18 0-13 5.82-13 13 0 9.65 13 23 13 23s13-13.35 13-23c0-7.18-5.82-13-13-13Z" fill="#E53E3E"/>
+                <circle cx="46" cy="24" r="4.5" fill="white"/>
+            </svg>
+            <div class="session-loading-spinner" aria-hidden="true"></div>
+            <p class="session-loading-title">Carregando seu acesso...</p>
+            <p class="session-loading-description">Verificando sua sessão com segurança</p>
+        </div>
+    </section>
+
     <!-- Authentication -->
-    <section id="authScreen" class="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue via-zenir-dark to-slate-900">
+    <section id="authScreen" hidden class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue via-zenir-dark to-slate-900">
         <div class="w-full max-w-md">
             <div class="text-center text-white mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 mb-4 shadow-lg rounded-2xl overflow-hidden">
@@ -113,7 +204,7 @@
     </section>
 
     <!-- Administrator e-mail verification -->
-    <section id="verificationScreen" class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
+    <section id="verificationScreen" hidden class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
             <div class="w-16 h-16 mx-auto rounded-full bg-blue-50 flex items-center justify-center mb-5">
                 <i class="fas fa-envelope-open-text text-3xl text-zenir-blue"></i>
@@ -130,7 +221,7 @@
     </section>
 
     <!-- Mandatory first-access password change -->
-    <section id="passwordChangeScreen" class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
+    <section id="passwordChangeScreen" hidden class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-4">
@@ -156,7 +247,7 @@
         </div>
     </section>
 
-    <div id="appShell" class="hidden">
+    <div id="appShell" hidden class="hidden">
     <!-- Header -->
     <header class="bg-gradient-to-r from-zenir-blue to-zenir-dark text-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
@@ -497,6 +588,7 @@
         const loading = document.getElementById('loading');
 
         // Authentication elements
+        const sessionLoadingScreen = document.getElementById('sessionLoadingScreen');
         const authScreen = document.getElementById('authScreen');
         const verificationScreen = document.getElementById('verificationScreen');
         const passwordChangeScreen = document.getElementById('passwordChangeScreen');
@@ -1011,13 +1103,23 @@
         }
 
         function showOnlyScreen(screen) {
-            authScreen.classList.toggle('hidden', screen !== authScreen);
-            authScreen.classList.toggle('flex', screen === authScreen);
-            verificationScreen.classList.toggle('hidden', screen !== verificationScreen);
-            verificationScreen.classList.toggle('flex', screen === verificationScreen);
-            passwordChangeScreen.classList.toggle('hidden', screen !== passwordChangeScreen);
-            passwordChangeScreen.classList.toggle('flex', screen === passwordChangeScreen);
-            appShell.classList.toggle('hidden', screen !== appShell);
+            const screens = [
+                sessionLoadingScreen,
+                authScreen,
+                verificationScreen,
+                passwordChangeScreen,
+                appShell
+            ];
+
+            screens.forEach(item => {
+                const isActive = item === screen;
+                item.hidden = !isActive;
+                item.classList.toggle('hidden', !isActive);
+
+                if (item !== appShell && item !== sessionLoadingScreen) {
+                    item.classList.toggle('flex', isActive);
+                }
+            });
         }
 
         function clearLoginForm() {
@@ -1175,6 +1277,7 @@
                         return;
                     }
 
+                    showOnlyScreen(sessionLoadingScreen);
                     showFeedback(authMessage);
                     await handleAuthenticatedUser(user);
                 } catch (error) {
