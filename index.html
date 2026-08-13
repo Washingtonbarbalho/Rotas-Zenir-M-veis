@@ -51,10 +51,122 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-zenir-bg min-h-screen font-zenir">
+    <!-- Authentication -->
+    <section id="authScreen" class="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue via-zenir-dark to-slate-900">
+        <div class="w-full max-w-md">
+            <div class="text-center text-white mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white bg-opacity-10 mb-4 shadow-lg">
+                    <i class="fas fa-route text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold">Sistema de Rotas</h1>
+                <p class="text-blue-100 mt-2">Zenir Móveis — CDZ Sobral</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-2xl p-7">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-zenir-dark">Entrar</h2>
+                    <p class="text-sm text-zenir-gray mt-1">Use seu e-mail e sua senha para acessar.</p>
+                </div>
+
+                <div id="authMessage" class="hidden mb-5 p-4 rounded-lg text-sm" role="alert"></div>
+
+                <form id="loginForm" class="space-y-5" autocomplete="off">
+                    <div>
+                        <label for="loginEmail" class="block text-sm font-semibold text-zenir-gray mb-2">E-mail</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="email" id="loginEmail" autocomplete="username" class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="loginPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Senha</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="loginPassword" autocomplete="current-password" class="w-full pl-11 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue focus:ring-2 focus:ring-zenir-blue focus:ring-opacity-20" required>
+                            <button type="button" class="toggle-password absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-zenir-blue" data-target="loginPassword" aria-label="Mostrar ou ocultar senha">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-zenir-blue hover:bg-zenir-dark text-white py-3 px-6 rounded-lg font-semibold transition-all shadow-md">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Entrar
+                    </button>
+                </form>
+
+                <div class="flex flex-col items-center gap-3 mt-5 text-sm">
+                    <button id="forgotPasswordBtn" type="button" class="text-zenir-blue hover:text-zenir-dark font-semibold">Esqueci minha senha</button>
+                    <button id="showAdminSetupBtn" type="button" class="text-zenir-gray hover:text-zenir-dark">Primeiro acesso do administrador</button>
+                </div>
+
+                <form id="adminSetupForm" class="hidden mt-6 pt-6 border-t border-gray-200 space-y-4" autocomplete="off">
+                    <div class="bg-blue-50 border border-blue-100 text-sm text-zenir-dark rounded-lg p-4">
+                        <p class="font-semibold">Ativação do administrador</p>
+                        <p class="mt-1">Conta: <span class="font-medium">washington.wn8@gmail.com</span></p>
+                        <p class="mt-1 text-xs text-zenir-gray">Após criar a senha, confirme o e-mail recebido antes de entrar.</p>
+                    </div>
+                    <div>
+                        <label for="adminSetupPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Crie sua senha</label>
+                        <input type="password" id="adminSetupPassword" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                    </div>
+                    <div>
+                        <label for="adminSetupPasswordConfirm" class="block text-sm font-semibold text-zenir-gray mb-2">Confirme sua senha</label>
+                        <input type="password" id="adminSetupPasswordConfirm" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                    </div>
+                    <button type="submit" class="w-full bg-zenir-dark hover:bg-zenir-blue text-white py-3 px-6 rounded-lg font-semibold">Ativar conta administradora</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Administrator e-mail verification -->
+    <section id="verificationScreen" class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-blue-50 flex items-center justify-center mb-5">
+                <i class="fas fa-envelope-open-text text-3xl text-zenir-blue"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-zenir-dark">Confirme seu e-mail</h2>
+            <p class="text-zenir-gray mt-3">Enviamos uma mensagem para <strong id="verificationEmail"></strong>. Abra o link e depois confirme abaixo.</p>
+            <div id="verificationMessage" class="hidden mt-5 p-3 rounded-lg text-sm" role="alert"></div>
+            <div class="space-y-3 mt-6">
+                <button id="checkVerificationBtn" type="button" class="w-full bg-zenir-blue hover:bg-zenir-dark text-white py-3 rounded-lg font-semibold">Já confirmei meu e-mail</button>
+                <button id="resendVerificationBtn" type="button" class="w-full border-2 border-zenir-blue text-zenir-blue hover:bg-blue-50 py-3 rounded-lg font-semibold">Reenviar confirmação</button>
+                <button id="verificationLogoutBtn" type="button" class="text-zenir-gray hover:text-zenir-dark text-sm">Voltar ao login</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mandatory first-access password change -->
+    <section id="passwordChangeScreen" class="hidden min-h-screen items-center justify-center px-4 py-10 bg-gradient-to-br from-zenir-blue to-zenir-dark">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-4">
+                    <i class="fas fa-key text-3xl text-zenir-red"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-zenir-dark">Crie sua senha definitiva</h2>
+                <p class="text-zenir-gray mt-2">A senha provisória não libera o sistema. Defina uma nova senha para continuar.</p>
+            </div>
+            <div id="passwordChangeMessage" class="hidden mb-5 p-4 rounded-lg text-sm" role="alert"></div>
+            <form id="passwordChangeForm" class="space-y-5" autocomplete="off">
+                <div>
+                    <label for="newPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Nova senha</label>
+                    <input type="password" id="newPassword" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                    <p class="text-xs text-zenir-gray mt-2">Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.</p>
+                </div>
+                <div>
+                    <label for="confirmNewPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Confirme a nova senha</label>
+                    <input type="password" id="confirmNewPassword" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                </div>
+                <button type="submit" class="w-full bg-zenir-blue hover:bg-zenir-dark text-white py-3 rounded-lg font-semibold">Salvar senha e acessar</button>
+                <button id="passwordChangeLogoutBtn" type="button" class="w-full text-zenir-gray hover:text-zenir-dark text-sm">Sair</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="appShell" class="hidden">
     <!-- Header -->
     <header class="bg-gradient-to-r from-zenir-blue to-zenir-dark text-white shadow-xl">
         <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5">
                 <div class="flex items-center space-x-3">
                     <div class="bg-white bg-opacity-10 rounded-lg p-2">
                         <i class="fas fa-route text-2xl"></i>
@@ -64,10 +176,21 @@
                         <p class="text-blue-100 text-sm font-medium">Zenir Móveis - CDZ Sobral</p>
                     </div>
                 </div>
-                <button id="addRouteBtn" class="bg-zenir-red hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg transform hover:scale-105">
-                    <i class="fas fa-plus mr-2"></i>
-                    Nova Rota
-                </button>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div class="text-sm sm:text-right mr-1">
+                        <p id="currentUserName" class="font-semibold"></p>
+                        <p id="currentUserDetails" class="text-blue-100 text-xs"></p>
+                    </div>
+                    <button id="manageUsersBtn" class="hidden bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-3 rounded-lg font-semibold transition-all">
+                        <i class="fas fa-users-cog mr-2"></i>Usuários
+                    </button>
+                    <button id="addRouteBtn" class="bg-zenir-red hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>Nova Rota
+                    </button>
+                    <button id="logoutBtn" class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-3 rounded-lg font-semibold transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -208,6 +331,83 @@
         </div>
     </div>
 
+    <!-- User management (administrator only) -->
+    <div id="usersModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[92vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-blue to-zenir-dark px-6 py-4">
+                <div class="flex justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-white"><i class="fas fa-users-cog mr-3"></i>Gerenciar usuários</h3>
+                        <p class="text-blue-100 text-sm mt-1">Cadastre usuários e defina o nível de acesso.</p>
+                    </div>
+                    <button id="closeUsersModal" class="text-white hover:text-gray-200 text-xl" aria-label="Fechar"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(92vh-92px)]">
+                <div class="flex justify-end mb-5">
+                    <button id="newUserBtn" class="bg-zenir-red hover:bg-red-600 text-white px-5 py-3 rounded-lg font-semibold shadow-md">
+                        <i class="fas fa-user-plus mr-2"></i>Novo usuário
+                    </button>
+                </div>
+                <div id="usersMessage" class="hidden mb-5 p-4 rounded-lg text-sm" role="alert"></div>
+                <div id="usersList" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="userFormModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-[60] p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-zenir-blue to-zenir-dark px-6 py-4 flex justify-between items-center">
+                <h3 id="userFormTitle" class="text-xl font-bold text-white">Novo usuário</h3>
+                <button id="closeUserFormModal" class="text-white hover:text-gray-200 text-xl" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="userForm" class="p-6 space-y-4 overflow-y-auto max-h-[calc(92vh-72px)]" autocomplete="off">
+                <input type="hidden" id="editingUserId">
+                <div id="userFormMessage" class="hidden p-4 rounded-lg text-sm" role="alert"></div>
+                <div>
+                    <label for="userName" class="block text-sm font-semibold text-zenir-gray mb-2">Nome</label>
+                    <input type="text" id="userName" maxlength="100" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                </div>
+                <div>
+                    <label for="userBranch" class="block text-sm font-semibold text-zenir-gray mb-2">Filial</label>
+                    <input type="text" id="userBranch" maxlength="80" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                </div>
+                <div>
+                    <label for="userWhatsapp" class="block text-sm font-semibold text-zenir-gray mb-2">WhatsApp</label>
+                    <input type="tel" id="userWhatsapp" maxlength="20" placeholder="(88) 99999-9999" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                </div>
+                <div>
+                    <label for="userEmail" class="block text-sm font-semibold text-zenir-gray mb-2">Usuário (e-mail)</label>
+                    <input type="email" id="userEmail" autocomplete="off" maxlength="150" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                    <p id="userEmailHelp" class="text-xs text-zenir-gray mt-1">Este e-mail será usado para entrar no sistema.</p>
+                </div>
+                <div id="temporaryPasswordField">
+                    <label for="temporaryPassword" class="block text-sm font-semibold text-zenir-gray mb-2">Senha provisória</label>
+                    <input type="password" id="temporaryPassword" autocomplete="new-password" minlength="8" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue">
+                    <p class="text-xs text-zenir-gray mt-1">No primeiro acesso, o usuário será obrigado a criar outra senha.</p>
+                </div>
+                <div>
+                    <label for="userAccess" class="block text-sm font-semibold text-zenir-gray mb-2">Permissão</label>
+                    <select id="userAccess" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-zenir-blue" required>
+                        <option value="consulta">Apenas consulta</option>
+                        <option value="total">Acesso total às rotas</option>
+                    </select>
+                    <p class="text-xs text-zenir-gray mt-1">Acesso total permite consultar, cadastrar, editar e excluir rotas.</p>
+                </div>
+                <label id="activeUserField" class="hidden items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <input type="checkbox" id="userActive" class="w-5 h-5 accent-zenir-blue">
+                    <span class="text-sm font-semibold text-zenir-dark">Usuário ativo</span>
+                </label>
+                <div class="flex gap-3 pt-3">
+                    <button type="submit" class="flex-1 bg-zenir-blue hover:bg-zenir-dark text-white py-3 rounded-lg font-semibold"><i class="fas fa-save mr-2"></i>Salvar</button>
+                    <button id="cancelUserForm" type="button" class="flex-1 bg-zenir-gray hover:bg-gray-600 text-white py-3 rounded-lg font-semibold">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div><!-- /appShell -->
+
     <!-- Loading indicator -->
     <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl p-8">
@@ -220,7 +420,33 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        import {
+            getAuth,
+            setPersistence,
+            browserLocalPersistence,
+            inMemoryPersistence,
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            signOut,
+            createUserWithEmailAndPassword,
+            updatePassword,
+            sendPasswordResetEmail,
+            sendEmailVerification,
+            reload,
+            updateProfile,
+            deleteUser
+        } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -234,12 +460,19 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const userManagementApp = initializeApp(firebaseConfig, "user-management");
+        const auth = getAuth(app);
+        const userManagementAuth = getAuth(userManagementApp);
         const db = getFirestore(app);
+        const ADMIN_EMAIL = "washington.wn8@gmail.com";
 
         // Global variables
         let allRoutes = [];
         let editingRouteId = null;
         let routeToDelete = null;
+        let currentUserProfile = null;
+        let managedUsers = [];
+        let authenticationStarted = false;
 
         // DOM elements
         const searchInput = document.getElementById('searchInput');
@@ -254,6 +487,54 @@
         const modalTitle = document.getElementById('modalTitle');
         const cancelBtn = document.getElementById('cancelBtn');
         const loading = document.getElementById('loading');
+
+        // Authentication elements
+        const authScreen = document.getElementById('authScreen');
+        const verificationScreen = document.getElementById('verificationScreen');
+        const passwordChangeScreen = document.getElementById('passwordChangeScreen');
+        const appShell = document.getElementById('appShell');
+        const loginForm = document.getElementById('loginForm');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const authMessage = document.getElementById('authMessage');
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        const showAdminSetupBtn = document.getElementById('showAdminSetupBtn');
+        const adminSetupForm = document.getElementById('adminSetupForm');
+        const verificationEmail = document.getElementById('verificationEmail');
+        const verificationMessage = document.getElementById('verificationMessage');
+        const checkVerificationBtn = document.getElementById('checkVerificationBtn');
+        const resendVerificationBtn = document.getElementById('resendVerificationBtn');
+        const verificationLogoutBtn = document.getElementById('verificationLogoutBtn');
+        const passwordChangeForm = document.getElementById('passwordChangeForm');
+        const passwordChangeMessage = document.getElementById('passwordChangeMessage');
+        const passwordChangeLogoutBtn = document.getElementById('passwordChangeLogoutBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const currentUserName = document.getElementById('currentUserName');
+        const currentUserDetails = document.getElementById('currentUserDetails');
+
+        // User management elements
+        const manageUsersBtn = document.getElementById('manageUsersBtn');
+        const usersModal = document.getElementById('usersModal');
+        const closeUsersModal = document.getElementById('closeUsersModal');
+        const newUserBtn = document.getElementById('newUserBtn');
+        const usersList = document.getElementById('usersList');
+        const usersMessage = document.getElementById('usersMessage');
+        const userFormModal = document.getElementById('userFormModal');
+        const closeUserFormModal = document.getElementById('closeUserFormModal');
+        const cancelUserForm = document.getElementById('cancelUserForm');
+        const userForm = document.getElementById('userForm');
+        const userFormTitle = document.getElementById('userFormTitle');
+        const userFormMessage = document.getElementById('userFormMessage');
+        const editingUserId = document.getElementById('editingUserId');
+        const userName = document.getElementById('userName');
+        const userBranch = document.getElementById('userBranch');
+        const userWhatsapp = document.getElementById('userWhatsapp');
+        const userEmail = document.getElementById('userEmail');
+        const userAccess = document.getElementById('userAccess');
+        const userActive = document.getElementById('userActive');
+        const temporaryPassword = document.getElementById('temporaryPassword');
+        const temporaryPasswordField = document.getElementById('temporaryPasswordField');
+        const activeUserField = document.getElementById('activeUserField');
         
         // Delete modal elements
         const deleteModal = document.getElementById('deleteModal');
@@ -695,6 +976,569 @@
             { localidade: "Sobral", diaSemana: "Sábado", montagem: "sim", inverno: "sim" }
         ];
 
+        // Authentication and permissions
+        let nextAuthMessage = '';
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function showFeedback(element, message = '', type = 'error') {
+            if (!message) {
+                element.textContent = '';
+                element.className = 'hidden';
+                return;
+            }
+
+            const styles = type === 'success'
+                ? 'bg-green-50 border border-green-200 text-green-800'
+                : type === 'info'
+                    ? 'bg-blue-50 border border-blue-200 text-blue-800'
+                    : 'bg-red-50 border border-red-200 text-red-800';
+            element.textContent = message;
+            element.className = `p-4 rounded-lg text-sm ${styles}`;
+        }
+
+        function showOnlyScreen(screen) {
+            authScreen.classList.toggle('hidden', screen !== authScreen);
+            authScreen.classList.toggle('flex', screen === authScreen);
+            verificationScreen.classList.toggle('hidden', screen !== verificationScreen);
+            verificationScreen.classList.toggle('flex', screen === verificationScreen);
+            passwordChangeScreen.classList.toggle('hidden', screen !== passwordChangeScreen);
+            passwordChangeScreen.classList.toggle('flex', screen === passwordChangeScreen);
+            appShell.classList.toggle('hidden', screen !== appShell);
+        }
+
+        function clearLoginForm() {
+            loginForm.reset();
+            loginEmail.value = '';
+            loginPassword.value = '';
+            adminSetupForm.reset();
+            adminSetupForm.classList.add('hidden');
+        }
+
+        function isAdministrator(user = auth.currentUser) {
+            return user?.email?.toLowerCase() === ADMIN_EMAIL;
+        }
+
+        function canManageRoutes() {
+            return isAdministrator() || currentUserProfile?.acesso === 'total';
+        }
+
+        function requireRouteManagement() {
+            if (canManageRoutes()) return true;
+            alert('Seu acesso permite apenas consultar rotas.');
+            return false;
+        }
+
+        function validateStrongPassword(password) {
+            return password.length >= 8 &&
+                /[a-z]/.test(password) &&
+                /[A-Z]/.test(password) &&
+                /\d/.test(password);
+        }
+
+        function translateAuthError(error) {
+            const messages = {
+                'auth/invalid-credential': 'E-mail ou senha incorretos.',
+                'auth/user-not-found': 'E-mail ou senha incorretos.',
+                'auth/wrong-password': 'E-mail ou senha incorretos.',
+                'auth/invalid-email': 'Informe um e-mail válido.',
+                'auth/email-already-in-use': 'Este e-mail já possui uma conta.',
+                'auth/weak-password': 'A senha informada é muito fraca.',
+                'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+                'auth/network-request-failed': 'Não foi possível conectar. Verifique sua internet.',
+                'auth/requires-recent-login': 'Entre novamente no sistema para concluir esta ação.',
+                'auth/operation-not-allowed': 'O login por e-mail e senha não está habilitado no Firebase.'
+            };
+            return messages[error?.code] || 'Não foi possível concluir a operação. Tente novamente.';
+        }
+
+        async function ensureAdministratorProfile(user) {
+            const profileRef = doc(db, 'usuarios', user.uid);
+            const profileSnapshot = await getDoc(profileRef);
+
+            if (!profileSnapshot.exists()) {
+                await setDoc(profileRef, {
+                    nome: user.displayName || 'Washington Barbalho',
+                    filial: 'CDZ Sobral',
+                    whatsapp: '',
+                    email: ADMIN_EMAIL,
+                    acesso: 'admin',
+                    ativo: true,
+                    senhaProvisoria: false,
+                    criadoEm: serverTimestamp(),
+                    atualizadoEm: serverTimestamp()
+                });
+                return (await getDoc(profileRef)).data();
+            }
+
+            return profileSnapshot.data();
+        }
+
+        async function getUserProfile(user) {
+            if (isAdministrator(user)) {
+                return ensureAdministratorProfile(user);
+            }
+
+            const profileSnapshot = await getDoc(doc(db, 'usuarios', user.uid));
+            return profileSnapshot.exists() ? profileSnapshot.data() : null;
+        }
+
+        function applyCurrentPermissions() {
+            const administrator = isAdministrator();
+            const routeManagement = canManageRoutes();
+            manageUsersBtn.classList.toggle('hidden', !administrator);
+            addRouteBtn.classList.toggle('hidden', !routeManagement);
+            currentUserName.textContent = currentUserProfile?.nome || auth.currentUser?.email || '';
+
+            const accessLabel = administrator
+                ? 'Administrador'
+                : currentUserProfile?.acesso === 'total'
+                    ? 'Acesso total'
+                    : 'Somente consulta';
+            const branch = currentUserProfile?.filial ? ` · ${currentUserProfile.filial}` : '';
+            currentUserDetails.textContent = `${accessLabel}${branch}`;
+        }
+
+        async function activateApplication() {
+            applyCurrentPermissions();
+            showOnlyScreen(appShell);
+            await loadRoutes();
+        }
+
+        async function handleAuthenticatedUser(user) {
+            if (isAdministrator(user) && !user.emailVerified) {
+                verificationEmail.textContent = user.email;
+                showFeedback(verificationMessage);
+                showOnlyScreen(verificationScreen);
+                return;
+            }
+
+            currentUserProfile = await getUserProfile(user);
+            if (!currentUserProfile) {
+                await logoutUser('Este usuário ainda não foi liberado pelo administrador.');
+                return;
+            }
+
+            if (currentUserProfile.ativo === false) {
+                await logoutUser('Este usuário está desativado. Fale com o administrador.');
+                return;
+            }
+
+            if (currentUserProfile.senhaProvisoria === true) {
+                passwordChangeForm.reset();
+                showFeedback(passwordChangeMessage);
+                showOnlyScreen(passwordChangeScreen);
+                return;
+            }
+
+            await activateApplication();
+        }
+
+        async function logoutUser(message = '') {
+            nextAuthMessage = message;
+            currentUserProfile = null;
+            managedUsers = [];
+            allRoutes = [];
+            clearLoginForm();
+            await signOut(auth);
+        }
+
+        async function initializeAuthentication() {
+            if (authenticationStarted) return;
+            authenticationStarted = true;
+            await Promise.all([
+                setPersistence(auth, browserLocalPersistence),
+                setPersistence(userManagementAuth, inMemoryPersistence)
+            ]);
+
+            onAuthStateChanged(auth, async (user) => {
+                try {
+                    if (!user) {
+                        currentUserProfile = null;
+                        showOnlyScreen(authScreen);
+                        clearLoginForm();
+                        showFeedback(authMessage, nextAuthMessage, nextAuthMessage ? 'info' : 'error');
+                        nextAuthMessage = '';
+                        return;
+                    }
+
+                    showFeedback(authMessage);
+                    await handleAuthenticatedUser(user);
+                } catch (error) {
+                    console.error('Erro ao validar acesso:', error);
+                    await logoutUser('Não foi possível validar seu acesso. Verifique a configuração do sistema.');
+                }
+            });
+        }
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            showFeedback(authMessage);
+            showLoading(true);
+            try {
+                await signInWithEmailAndPassword(auth, loginEmail.value.trim().toLowerCase(), loginPassword.value);
+            } catch (error) {
+                console.error('Erro de login:', error);
+                showFeedback(authMessage, translateAuthError(error));
+                loginPassword.value = '';
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        forgotPasswordBtn.addEventListener('click', async () => {
+            const email = loginEmail.value.trim().toLowerCase();
+            if (!email) {
+                showFeedback(authMessage, 'Digite seu e-mail antes de solicitar a redefinição.');
+                loginEmail.focus();
+                return;
+            }
+
+            showLoading(true);
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showFeedback(authMessage, 'Se o e-mail estiver cadastrado, você receberá as instruções para redefinir a senha.', 'success');
+            } catch (error) {
+                console.error('Erro ao solicitar redefinição:', error);
+                showFeedback(authMessage, translateAuthError(error));
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        showAdminSetupBtn.addEventListener('click', () => {
+            adminSetupForm.classList.toggle('hidden');
+            showFeedback(authMessage);
+        });
+
+        adminSetupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const password = document.getElementById('adminSetupPassword').value;
+            const confirmation = document.getElementById('adminSetupPasswordConfirm').value;
+
+            if (password !== confirmation) {
+                showFeedback(authMessage, 'As senhas não coincidem.');
+                return;
+            }
+            if (!validateStrongPassword(password)) {
+                showFeedback(authMessage, 'Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const credential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+                await updateProfile(credential.user, { displayName: 'Washington Barbalho' });
+                await sendEmailVerification(credential.user);
+                verificationEmail.textContent = ADMIN_EMAIL;
+                showFeedback(verificationMessage, 'E-mail de confirmação enviado.', 'success');
+                showOnlyScreen(verificationScreen);
+            } catch (error) {
+                console.error('Erro ao ativar administrador:', error);
+                const message = error.code === 'auth/email-already-in-use'
+                    ? 'A conta administradora já existe. Use o login ou “Esqueci minha senha”.'
+                    : translateAuthError(error);
+                showFeedback(authMessage, message);
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        checkVerificationBtn.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            showLoading(true);
+            try {
+                await reload(auth.currentUser);
+                if (!auth.currentUser.emailVerified) {
+                    showFeedback(verificationMessage, 'O e-mail ainda não foi confirmado. Abra o link recebido e tente novamente.');
+                    return;
+                }
+                await handleAuthenticatedUser(auth.currentUser);
+            } catch (error) {
+                console.error('Erro ao confirmar e-mail:', error);
+                showFeedback(verificationMessage, translateAuthError(error));
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        resendVerificationBtn.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            showLoading(true);
+            try {
+                await sendEmailVerification(auth.currentUser);
+                showFeedback(verificationMessage, 'Novo e-mail de confirmação enviado.', 'success');
+            } catch (error) {
+                console.error('Erro ao reenviar confirmação:', error);
+                showFeedback(verificationMessage, translateAuthError(error));
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        passwordChangeForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const password = document.getElementById('newPassword').value;
+            const confirmation = document.getElementById('confirmNewPassword').value;
+
+            if (password !== confirmation) {
+                showFeedback(passwordChangeMessage, 'As senhas não coincidem.');
+                return;
+            }
+            if (!validateStrongPassword(password)) {
+                showFeedback(passwordChangeMessage, 'Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                await updatePassword(auth.currentUser, password);
+                await updateDoc(doc(db, 'usuarios', auth.currentUser.uid), {
+                    senhaProvisoria: false,
+                    senhaAlteradaEm: serverTimestamp(),
+                    atualizadoEm: serverTimestamp()
+                });
+                currentUserProfile = { ...currentUserProfile, senhaProvisoria: false };
+                passwordChangeForm.reset();
+                await activateApplication();
+            } catch (error) {
+                console.error('Erro ao trocar senha:', error);
+                showFeedback(passwordChangeMessage, translateAuthError(error));
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => logoutUser());
+        verificationLogoutBtn.addEventListener('click', () => logoutUser());
+        passwordChangeLogoutBtn.addEventListener('click', () => logoutUser());
+
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = document.getElementById(button.dataset.target);
+                const showing = input.type === 'text';
+                input.type = showing ? 'password' : 'text';
+                button.querySelector('i').className = `fas ${showing ? 'fa-eye' : 'fa-eye-slash'}`;
+            });
+        });
+
+        // User management
+        function showUsersModal(show = true) {
+            usersModal.classList.toggle('hidden', !show);
+            usersModal.classList.toggle('flex', show);
+        }
+
+        function showUserFormModal(show = true) {
+            userFormModal.classList.toggle('hidden', !show);
+            userFormModal.classList.toggle('flex', show);
+        }
+
+        function formatUserCard(user) {
+            const administrator = user.email?.toLowerCase() === ADMIN_EMAIL || user.acesso === 'admin';
+            const active = user.ativo !== false;
+            const accessLabel = administrator ? 'Administrador' : user.acesso === 'total' ? 'Acesso total' : 'Somente consulta';
+            const statusStyles = active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+            const accessStyles = administrator ? 'bg-purple-100 text-purple-800' : user.acesso === 'total' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700';
+            const whatsappDigits = String(user.whatsapp || '').replace(/\D/g, '');
+
+            return `
+                <article class="border border-gray-200 rounded-xl p-5 ${active ? 'bg-white' : 'bg-gray-50 opacity-80'}">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <h4 class="font-bold text-lg text-zenir-dark">${escapeHtml(user.nome)}</h4>
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold ${accessStyles}">${accessLabel}</span>
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusStyles}">${active ? 'Ativo' : 'Desativado'}</span>
+                                ${user.senhaProvisoria ? '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Senha provisória</span>' : ''}
+                            </div>
+                            <p class="text-sm text-zenir-gray"><i class="fas fa-envelope w-5"></i>${escapeHtml(user.email)}</p>
+                            <p class="text-sm text-zenir-gray mt-1"><i class="fas fa-store w-5"></i>${escapeHtml(user.filial || 'Não informada')}</p>
+                            <p class="text-sm text-zenir-gray mt-1"><i class="fab fa-whatsapp w-5"></i>${whatsappDigits ? `<a class="hover:text-zenir-blue" href="https://wa.me/55${whatsappDigits}" target="_blank" rel="noopener noreferrer">${escapeHtml(user.whatsapp)}</a>` : 'Não informado'}</p>
+                        </div>
+                        ${administrator ? '' : `
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="editManagedUser('${user.id}')" class="bg-zenir-blue hover:bg-zenir-dark text-white px-4 py-2 rounded-lg text-sm font-semibold"><i class="fas fa-edit mr-2"></i>Editar</button>
+                                <button onclick="toggleManagedUser('${user.id}')" class="${active ? 'bg-zenir-red hover:bg-red-600' : 'bg-green-600 hover:bg-green-700'} text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                    <i class="fas ${active ? 'fa-user-slash' : 'fa-user-check'} mr-2"></i>${active ? 'Desativar' : 'Reativar'}
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                </article>
+            `;
+        }
+
+        async function loadManagedUsers() {
+            if (!isAdministrator()) return;
+            showFeedback(usersMessage);
+            usersList.innerHTML = '<div class="text-center py-8 text-zenir-gray"><i class="fas fa-spinner fa-spin mr-2"></i>Carregando usuários...</div>';
+            try {
+                const snapshot = await getDocs(collection(db, 'usuarios'));
+                managedUsers = [];
+                snapshot.forEach(userDoc => managedUsers.push({ id: userDoc.id, ...userDoc.data() }));
+                managedUsers.sort((a, b) => {
+                    if (a.email?.toLowerCase() === ADMIN_EMAIL) return -1;
+                    if (b.email?.toLowerCase() === ADMIN_EMAIL) return 1;
+                    return String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR');
+                });
+                usersList.innerHTML = managedUsers.length
+                    ? managedUsers.map(formatUserCard).join('')
+                    : '<div class="text-center py-8 text-zenir-gray">Nenhum usuário cadastrado.</div>';
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                usersList.innerHTML = '';
+                showFeedback(usersMessage, 'Não foi possível carregar os usuários.');
+            }
+        }
+
+        function prepareNewUserForm() {
+            userForm.reset();
+            editingUserId.value = '';
+            userFormTitle.textContent = 'Novo usuário';
+            userEmail.disabled = false;
+            temporaryPassword.required = true;
+            temporaryPasswordField.classList.remove('hidden');
+            activeUserField.classList.add('hidden');
+            activeUserField.classList.remove('flex');
+            showFeedback(userFormMessage);
+            showUserFormModal(true);
+        }
+
+        window.editManagedUser = function(userId) {
+            if (!isAdministrator()) return;
+            const user = managedUsers.find(item => item.id === userId);
+            if (!user || user.email?.toLowerCase() === ADMIN_EMAIL) return;
+            userForm.reset();
+            editingUserId.value = user.id;
+            userFormTitle.textContent = 'Editar usuário';
+            userName.value = user.nome || '';
+            userBranch.value = user.filial || '';
+            userWhatsapp.value = user.whatsapp || '';
+            userEmail.value = user.email || '';
+            userEmail.disabled = true;
+            userAccess.value = user.acesso === 'total' ? 'total' : 'consulta';
+            userActive.checked = user.ativo !== false;
+            temporaryPassword.required = false;
+            temporaryPasswordField.classList.add('hidden');
+            activeUserField.classList.remove('hidden');
+            activeUserField.classList.add('flex');
+            showFeedback(userFormMessage);
+            showUserFormModal(true);
+        };
+
+        window.toggleManagedUser = async function(userId) {
+            if (!isAdministrator()) return;
+            const user = managedUsers.find(item => item.id === userId);
+            if (!user || user.email?.toLowerCase() === ADMIN_EMAIL) return;
+            const nextStatus = user.ativo === false;
+            const action = nextStatus ? 'reativar' : 'desativar';
+            if (!confirm(`Deseja ${action} o usuário ${user.nome}?`)) return;
+
+            showLoading(true);
+            try {
+                await updateDoc(doc(db, 'usuarios', userId), {
+                    ativo: nextStatus,
+                    atualizadoEm: serverTimestamp()
+                });
+                await loadManagedUsers();
+                showFeedback(usersMessage, `Usuário ${nextStatus ? 'reativado' : 'desativado'} com sucesso.`, 'success');
+            } catch (error) {
+                console.error('Erro ao alterar usuário:', error);
+                showFeedback(usersMessage, 'Não foi possível alterar o usuário.');
+            } finally {
+                showLoading(false);
+            }
+        };
+
+        userForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!isAdministrator()) return;
+
+            const userId = editingUserId.value;
+            const email = userEmail.value.trim().toLowerCase();
+            const profileData = {
+                nome: userName.value.trim(),
+                filial: userBranch.value.trim(),
+                whatsapp: userWhatsapp.value.trim(),
+                acesso: userAccess.value,
+                atualizadoEm: serverTimestamp()
+            };
+
+            if (!profileData.nome || !profileData.filial || !profileData.whatsapp) {
+                showFeedback(userFormMessage, 'Preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                if (userId) {
+                    await updateDoc(doc(db, 'usuarios', userId), {
+                        ...profileData,
+                        ativo: userActive.checked
+                    });
+                } else {
+                    if (email === ADMIN_EMAIL) throw new Error('reserved-admin-email');
+                    if (!validateStrongPassword(temporaryPassword.value)) throw new Error('weak-temporary-password');
+
+                    let credential;
+                    try {
+                        credential = await createUserWithEmailAndPassword(userManagementAuth, email, temporaryPassword.value);
+                        await updateProfile(credential.user, { displayName: profileData.nome });
+                        await setDoc(doc(db, 'usuarios', credential.user.uid), {
+                            ...profileData,
+                            email,
+                            ativo: true,
+                            senhaProvisoria: true,
+                            criadoPor: auth.currentUser.uid,
+                            criadoEm: serverTimestamp()
+                        });
+                    } catch (error) {
+                        if (credential?.user) {
+                            try { await deleteUser(credential.user); } catch (rollbackError) { console.error('Falha ao desfazer usuário:', rollbackError); }
+                        }
+                        throw error;
+                    } finally {
+                        try { await signOut(userManagementAuth); } catch (secondaryLogoutError) { console.error('Falha ao encerrar cadastro secundário:', secondaryLogoutError); }
+                    }
+                }
+
+                showUserFormModal(false);
+                await loadManagedUsers();
+                showFeedback(usersMessage, userId ? 'Usuário atualizado com sucesso.' : 'Usuário cadastrado com senha provisória.', 'success');
+            } catch (error) {
+                console.error('Erro ao salvar usuário:', error);
+                let message = translateAuthError(error);
+                if (error.message === 'reserved-admin-email') message = 'O e-mail do administrador é reservado.';
+                if (error.message === 'weak-temporary-password') message = 'A senha provisória deve ter 8 caracteres, com letra maiúscula, minúscula e número.';
+                showFeedback(userFormMessage, message);
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        manageUsersBtn.addEventListener('click', async () => {
+            if (!isAdministrator()) return;
+            showUsersModal(true);
+            await loadManagedUsers();
+        });
+        closeUsersModal.addEventListener('click', () => showUsersModal(false));
+        newUserBtn.addEventListener('click', prepareNewUserForm);
+        closeUserFormModal.addEventListener('click', () => showUserFormModal(false));
+        cancelUserForm.addEventListener('click', () => showUserFormModal(false));
+        usersModal.addEventListener('click', event => {
+            if (event.target === usersModal) showUsersModal(false);
+        });
+        userFormModal.addEventListener('click', event => {
+            if (event.target === userFormModal) showUserFormModal(false);
+        });
+
         // Functions
         function showLoading(show = true) {
             loading.classList.toggle('hidden', !show);
@@ -725,7 +1569,7 @@
 
             return `
                 <div class="bg-white rounded-xl p-6 border-l-4 border-zenir-blue shadow-lg hover:shadow-xl transition-shadow duration-200">
-                    <h4 class="font-bold text-xl text-zenir-dark mb-4">${route.localidade}</h4>
+                    <h4 class="font-bold text-xl text-zenir-dark mb-4">${escapeHtml(route.localidade)}</h4>
                     <div class="space-y-3">
                         <div class="flex items-center">
                             <div class="bg-zenir-blue bg-opacity-10 rounded-lg p-2 mr-3">
@@ -733,7 +1577,7 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-zenir-gray">Dia da Semana</span>
-                                <p class="font-semibold text-zenir-dark">${route.diaSemana}</p>
+                                <p class="font-semibold text-zenir-dark">${escapeHtml(route.diaSemana)}</p>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -742,7 +1586,7 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-zenir-gray">Montagem</span>
-                                <p class="font-semibold text-zenir-dark">${montagemText[route.montagem]}</p>
+                                <p class="font-semibold text-zenir-dark">${escapeHtml(montagemText[route.montagem] || route.montagem)}</p>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -751,23 +1595,24 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-zenir-gray">Entrega no Inverno</span>
-                                <p class="font-semibold text-zenir-dark">${invernoText[route.inverno]}</p>
+                                <p class="font-semibold text-zenir-dark">${escapeHtml(invernoText[route.inverno] || route.inverno)}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-3 mt-6 pt-4 border-t border-gray-100">
+                    ${canManageRoutes() ? `<div class="flex gap-3 mt-6 pt-4 border-t border-gray-100">
                         <button onclick="editRoute('${route.id}')" class="flex-1 bg-zenir-blue hover:bg-zenir-dark text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-md">
                             <i class="fas fa-edit mr-2"></i>Editar
                         </button>
                         <button onclick="deleteRoute('${route.id}')" class="flex-1 bg-zenir-red hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-md">
                             <i class="fas fa-trash mr-2"></i>Excluir
                         </button>
-                    </div>
+                    </div>` : ''}
                 </div>
             `;
         }
 
         async function loadRoutes() {
+            if (!auth.currentUser || !currentUserProfile || currentUserProfile.ativo === false) return;
             try {
                 showLoading(true);
                 const querySnapshot = await getDocs(collection(db, "rotas"));
@@ -786,7 +1631,7 @@
                     });
                 });
 
-                if (allRoutes.length === 0) {
+                if (allRoutes.length === 0 && canManageRoutes()) {
                     await populateInitialData();
                 }
             } catch (error) {
@@ -798,6 +1643,7 @@
         }
 
         async function populateInitialData() {
+            if (!requireRouteManagement()) return;
             try {
                 console.log("Populando dados iniciais...");
                 const batch = [];
@@ -880,7 +1726,7 @@
                 searchResults.innerHTML = `
                     <div class="text-center py-8">
                         <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
-                        <p class="text-gray-600 text-lg">Nenhuma localidade encontrada para "${searchTerm}"</p>
+                        <p class="text-gray-600 text-lg">Nenhuma localidade encontrada para "${escapeHtml(searchTerm)}"</p>
                         <p class="text-gray-500 text-sm mt-2">Tente usar termos diferentes ou verifique a ortografia.</p>
                     </div>
                 `;
@@ -916,6 +1762,7 @@
         }
 
         async function saveRoute(routeData) {
+            if (!requireRouteManagement()) return;
             try {
                 showLoading(true);
                 
@@ -947,6 +1794,7 @@
         }
 
         window.editRoute = function(routeId) {
+            if (!requireRouteManagement()) return;
             const route = allRoutes.find(r => r.id === routeId);
             if (route) {
                 editingRouteId = routeId;
@@ -967,6 +1815,7 @@
 
         // Função chamada quando o botão de excluir é clicado
         window.deleteRoute = function(routeId) {
+            if (!requireRouteManagement()) return;
             const route = allRoutes.find(r => r.id === routeId);
             if (route) {
                 routeToDelete = routeId;
@@ -977,6 +1826,7 @@
 
         // Função para confirmar a exclusão
         async function confirmDeleteRoute() {
+            if (!requireRouteManagement()) return;
             if (routeToDelete) {
                 try {
                     showLoading(true);
@@ -1046,6 +1896,7 @@
         });
 
         addRouteBtn.addEventListener('click', () => {
+            if (!requireRouteManagement()) return;
             clearForm();
             modalTitle.textContent = 'Nova Rota';
             showModal(true);
@@ -1111,9 +1962,13 @@
             });
         }
 
-        // Initialize app
+        // Initialize authentication. The local persistence keeps the session until logout.
         document.addEventListener('DOMContentLoaded', () => {
-            loadRoutes();
+            initializeAuthentication().catch(error => {
+                console.error('Erro ao iniciar autenticação:', error);
+                showOnlyScreen(authScreen);
+                showFeedback(authMessage, 'Não foi possível iniciar a autenticação. Recarregue a página.');
+            });
         });
 
         // Handle dark mode

@@ -1,0 +1,128 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email == 'washington.wn8@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function profileExists() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    function profile() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+
+    function isActiveUser() {
+      return isAdmin() || (profileExists() && profile().ativo == true);
+    }
+
+    function canManageRoutes() {
+      return isAdmin()
+        || (isActiveUser() && profile().acesso == 'total');
+    }
+
+    function validRoute() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['localidade', 'diaSemana', 'montagem', 'inverno'])
+        && data.keys().hasOnly([
+          'localidade',
+          'diaSemana',
+          'montagem',
+          'inverno',
+          '_displayDiaSemana',
+          '_deleted'
+        ])
+        && data.localidade is string
+        && data.localidade.size() > 0
+        && data.localidade.size() <= 150
+        && data.diaSemana in [
+          'Segunda-feira',
+          'Terça-feira',
+          'Quarta-feira',
+          'Quinta-feira',
+          'Sexta-feira'
+        ]
+        && data.montagem in ['sim', 'nao', 'sede']
+        && data.inverno in ['sim', 'nao']
+        && (!('_displayDiaSemana' in data)
+          || data._displayDiaSemana == null
+          || data._displayDiaSemana == 'Sábado')
+        && (!('_deleted' in data) || data._deleted is bool);
+    }
+
+    function validUserProfile(userId) {
+      let data = request.resource.data;
+      let adminProfile = userId == request.auth.uid
+        && data.email == 'washington.wn8@gmail.com'
+        && data.acesso == 'admin'
+        && data.ativo == true;
+      let regularProfile = data.email != 'washington.wn8@gmail.com'
+        && data.acesso in ['total', 'consulta'];
+      return data.keys().hasAll([
+          'nome',
+          'filial',
+          'whatsapp',
+          'email',
+          'acesso',
+          'ativo',
+          'senhaProvisoria'
+        ])
+        && data.nome is string
+        && data.nome.size() > 0
+        && data.nome.size() <= 100
+        && data.filial is string
+        && data.filial.size() <= 80
+        && data.whatsapp is string
+        && data.whatsapp.size() <= 20
+        && data.email is string
+        && data.email.size() > 3
+        && data.email.size() <= 150
+        && data.ativo is bool
+        && data.senhaProvisoria is bool
+        && (adminProfile || regularProfile);
+    }
+
+    match /usuarios/{userId} {
+      allow get: if signedIn() && (isAdmin() || request.auth.uid == userId);
+      allow list: if isAdmin();
+
+      allow create: if isAdmin() && validUserProfile(userId);
+
+      allow update: if (
+          isAdmin() && validUserProfile(userId)
+        ) || (
+          signedIn()
+          && request.auth.uid == userId
+          && resource.data.ativo == true
+          && resource.data.senhaProvisoria == true
+          && request.resource.data.senhaProvisoria == false
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'senhaProvisoria',
+            'senhaAlteradaEm',
+            'atualizadoEm'
+          ])
+        );
+
+      allow delete: if false;
+    }
+
+    match /rotas/{routeId} {
+      allow read: if isActiveUser();
+      allow create, update: if canManageRoutes() && validRoute();
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

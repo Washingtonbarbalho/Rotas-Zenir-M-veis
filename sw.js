@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rotas-zenir-v2.1.0';
+const CACHE_NAME = 'rotas-zenir-v3.0.0';
 const urlsToCache = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
   'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js',
   'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js'
 ];
 
